@@ -62,12 +62,22 @@ int main(int argc, char* argv[]) {
 
   }
 #else
+  std::string output_dir = "/mnt/m/scientificProject/output/";
   for (int i = 1; i < argc; ++i) {
+    std::cout << "Trying to read image from: " << argv[i] << std::endl;
     cv::Mat board = cv::imread(argv[i]);
-    cv::Mat image = cv::imread(argv[i],cv::IMREAD_GRAYSCALE);
+    if (board.empty()) {
+      std::cerr << "Error: Could not read image from " << argv[i] << std::endl;
+      continue;
+    }
+    cv::Mat image = cv::imread(argv[i], cv::IMREAD_GRAYSCALE);
+    if (image.empty()) {
+      std::cerr << "Error: Could not read grayscale image from " << argv[i] << std::endl;
+      continue;
+    }
     // cv::resize(image, image, cv::Size(image.cols / 2, image.rows / 2));
     // cv::resize(board, board, cv::Size(board.cols / 2, board.rows / 2));
-    cv::imshow("origin image", image);
+    // cv::imshow("origin image", image);
     vector<shared_ptr<Ellipse> > ells;
     int row = image.rows;
     int col = image.cols;
@@ -93,9 +103,11 @@ int main(int argc, char* argv[]) {
               0);
 
     }
-    cv::imshow("detected result", board);
-    cv::waitKey(0);
+    std::string output_filename = output_dir + "output_" + std::to_string(i) + ".jpg";
+    cv::imwrite(output_filename, board);
+    std::cout << "Saved result to " << output_filename << std::endl;
   }
+  std::cout << "Processing complete. Please check the output images in " << output_dir << std::endl;
 #endif
   return 0;
 }

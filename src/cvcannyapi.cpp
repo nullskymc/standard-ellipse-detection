@@ -304,9 +304,10 @@ static void Canny3(InputArray image, OutputArray _edges, OutputArray _sobel_x,
   _sobel_x.create(src.size(), CV_16S);
   _sobel_y.create(src.size(), CV_16S);
 
-  CvMat c_src = src, c_dst = _edges.getMat();
-  CvMat c_dx = _sobel_x.getMat();
-  CvMat c_dy = _sobel_y.getMat();
+  CvMat c_src = cvMat(src);
+  CvMat c_dst = cvMat(_edges.getMat());
+  CvMat c_dx = cvMat(_sobel_x.getMat());
+  CvMat c_dy = cvMat(_sobel_y.getMat());
 
   cvCanny3(&c_src, &c_dst, &c_dx, &c_dy,
             apertureSize + (L2gradient ? CV_CANNY_L2_GRADIENT : 0));
